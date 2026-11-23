@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// meltslicer-mcp: the Melt3D Slicer API as an MCP server over stdio.
+// nonplanar-slicer-mcp: the Melt3D Slicer API as an MCP server over stdio.
 // MELT3D_API_KEY is the API key; MELT3D_API_URL replaces
 // https://api.melt3d.eu, for testing.
 

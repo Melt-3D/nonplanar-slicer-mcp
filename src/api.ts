@@ -106,7 +106,7 @@ async function send(
             'Content-Type': 'model/stl',
             'Content-Encoding': 'gzip',
             'Idempotency-Key': idempotencyKey,
-            'User-Agent': 'meltslicer-mcp',
+            'User-Agent': 'nonplanar-slicer-mcp',
         },
         // A view fetch's types take: Node's Buffer may sit on a shared buffer.
         body: new Uint8Array(body.buffer as ArrayBuffer, body.byteOffset, body.byteLength),
