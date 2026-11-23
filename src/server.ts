@@ -45,10 +45,10 @@ Print settings (all optional; left out, the engine's default):
 - brim_width: mm, 0 to 50
 - supports: none or bed (supports from the bed only)
 
-Keys: a test key (m3d_test_...) is free and returns a preview of the G-code
-(the toolpath, not printable). A live key (m3d_live_...) returns printable
-G-code and is billed per slice. Limits per key: live 4 slices at once and
-120 a minute, test 1 and 10. A slice is cut off after 100 seconds.
+Keys: every slice returns printable G-code. A live key (m3d_live_...) is
+billed per slice; a test key (m3d_test_...) is free, with tighter limits.
+Limits per key: live 4 slices at once and 120 a minute, test 1 and 10. A
+slice that cannot answer within 95 seconds is stopped and not billed.
 Keys and pricing: https://melt3d.eu/api`;
 
 export function createServer(config: Config): McpServer {
@@ -72,7 +72,7 @@ export function createServer(config: Config): McpServer {
                 "Slices an STL file on this computer into G-code on Melt3D's servers and writes the G-code to a file, " +
                 'in flat layers or in nonplanar conical layers (layers: "conical"), which print overhangs without ' +
                 'support. ' +
-                'Returns where it was written, whether it is printable, the layer count, and the estimated print time ' +
+                'Returns where it was written, whether its layers are conical, the layer count, and the estimated print time ' +
                 'and filament. A live API key is billed once per successful slice; failed slices are free.',
             inputSchema: {
                 model_path: z.string().describe('Path to the STL file to slice.'),
@@ -107,7 +107,7 @@ export function createServer(config: Config): McpServer {
             },
             outputSchema: {
                 output_path: z.string(),
-                printable: z.boolean(),
+                conical: z.boolean().describe('Sliced in nonplanar conical layers.'),
                 gcode_bytes: z.number(),
                 layers: z.number(),
                 print_seconds: z.number().optional(),
@@ -159,12 +159,8 @@ export function createServer(config: Config): McpServer {
             await writeFile(output, sliced.gcode);
 
             const summary = summarize(sliced.gcode);
-            const printable = sliced.kind !== 'preview';
-            const what = printable
-                ? sliced.kind === 'mapped'
-                    ? 'printable nonplanar (conical) G-code'
-                    : 'printable G-code'
-                : 'a G-code PREVIEW (test key: toolpath only, not printable)';
+            const conical = sliced.kind === 'mapped';
+            const what = conical ? 'printable nonplanar (conical) G-code' : 'printable G-code';
             const lines = [
                 `Wrote ${what} to ${output}.`,
                 `${summary.layers} layers, ${(sliced.gcode.length / 1024).toFixed(0)} KiB.`,
@@ -172,12 +168,11 @@ export function createServer(config: Config): McpServer {
             if (summary.printSeconds !== undefined) lines.push(`Estimated print time: ${formatDuration(summary.printSeconds)}.`);
             if (summary.filamentGrams !== undefined) lines.push(`Filament: ${summary.filamentGrams.toFixed(1)} g.`);
             else if (summary.filamentMeters !== undefined) lines.push(`Filament: ${summary.filamentMeters.toFixed(2)} m.`);
-            if (!printable) lines.push('For printable G-code, use a live key: https://auth.melt3d.eu/developers');
             return {
                 content: [{ type: 'text', text: lines.join('\n') }],
                 structuredContent: {
                     output_path: output,
-                    printable,
+                    conical,
                     gcode_bytes: Buffer.byteLength(sliced.gcode),
                     layers: summary.layers,
                     print_seconds: summary.printSeconds,

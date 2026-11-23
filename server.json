@@ -19,7 +19,7 @@
       "environmentVariables": [
         {
           "name": "MELT3D_API_KEY",
-          "description": "A Melt3D Slicer API key (m3d_test_ free preview, m3d_live_ billed). Create one at https://auth.melt3d.eu/developers.",
+          "description": "A Melt3D Slicer API key (m3d_test_ free, m3d_live_ billed per slice). Create one at https://auth.melt3d.eu/developers.",
           "isRequired": true,
           "isSecret": true,
           "format": "string"

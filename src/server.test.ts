@@ -95,7 +95,7 @@ test('slice_model writes the G-code beside the model and says what it is', async
         assert.match(text(result), /1 h 3 min/);
         assert.deepEqual(result.structuredContent, {
             output_path: output,
-            printable: true,
+            conical: false,
             gcode_bytes: Buffer.byteLength(PRUSA_GCODE),
             layers: 2,
             print_seconds: 3750,
@@ -120,13 +120,13 @@ test('slice_model writes the G-code beside the model and says what it is', async
     }
 });
 
-test('a test key is told its G-code is a preview', async () => {
-    const api = await fakeApi([gcode('preview')]);
+test('a test key gets printable G-code too', async () => {
+    const api = await fakeApi([gcode('full')]);
     try {
         const client = await connect(api.url, 'm3d_test_x');
         const result = await client.callTool({ name: 'slice_model', arguments: { model_path: await model() } });
-        assert.match(text(result), /PREVIEW/);
-        assert.equal((result.structuredContent as { printable: boolean }).printable, false);
+        assert.match(text(result), /Wrote printable G-code/);
+        assert.doesNotMatch(text(result), /PREVIEW/);
     } finally {
         api.close();
     }
@@ -142,7 +142,7 @@ test('conical layers are asked for, and their G-code is called nonplanar', async
         });
         assert.equal(result.isError, undefined, text(result));
         assert.match(text(result), /printable nonplanar \(conical\) G-code/);
-        assert.equal((result.structuredContent as { printable: boolean }).printable, true);
+        assert.equal((result.structuredContent as { conical: boolean }).conical, true);
         const url = new URL(api.seen[0].url, api.url);
         assert.equal(url.searchParams.get('layers'), 'conical');
         assert.equal(url.searchParams.get('cone_angle'), '-30');

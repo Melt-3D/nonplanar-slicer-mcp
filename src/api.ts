@@ -36,7 +36,7 @@ export interface SliceRequest {
 
 export interface Sliced {
     gcode: string;
-    /** `full`, or `mapped` for conical layers: printable (live keys). `preview`: the toolpath only (test keys). */
+    /** Always printable: `full` for flat layers, `mapped` for conical ones. */
     kind: string;
     /** Requests the key may still make this minute, if the server said. */
     rateLimitRemaining?: number;

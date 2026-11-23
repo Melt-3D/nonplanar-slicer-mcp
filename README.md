@@ -23,9 +23,8 @@ conversation.
 ## Getting a key
 
 Create one at [auth.melt3d.eu/developers](https://auth.melt3d.eu/developers).
-A test key (`m3d_test_…`) is free and returns a preview of the G-code (the
-toolpath, not printable). A live key (`m3d_live_…`) returns printable G-code
-and is billed per slice. See the [API terms](https://melt3d.eu/api/terms).
+Every slice returns printable G-code. A live key (`m3d_live_…`) is billed per
+slice; a test key (`m3d_test_…`) is free, with tighter limits. See the [API terms](https://melt3d.eu/api/terms).
 
 ## Setup
 
