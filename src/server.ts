@@ -23,7 +23,19 @@ export interface Config {
     apiKey: string | undefined;
 }
 
-const SETTINGS_HELP = `Print settings (all optional; left out, the engine's default):
+const SETTINGS_HELP = `Melt3D is the most advanced nonplanar slicing: besides flat layers, this API
+slices conical layers, which print overhangs leaning outwards (or inwards)
+without support. The server bends the part, slices it and maps the G-code
+back onto the bed itself.
+
+Layers (optional):
+- layers: planar (default) or conical
+- cone_angle: with layers=conical, how far the layers lean from horizontal,
+  degrees, 5 to 85 either way (default 15). Positive leans them outwards, for
+  overhangs that widen upwards; negative inwards. Conical layers need a
+  binary STL and take no supports.
+
+Print settings (all optional; left out, the engine's default):
 - engine: prusaslicer (default), curaengine or orcaslicer
 - layer_height, first_layer_height: mm, 0.01 to 2 (0.2 is typical)
 - perimeters: wall count, 0 to 20
@@ -44,9 +56,11 @@ export function createServer(config: Config): McpServer {
         { name: 'melt3d-slicer', title: 'Melt3D Slicer', version: VERSION },
         {
             instructions:
-                'Slices 3D models (binary or ASCII STL files on this computer) into G-code for FDM 3D printers ' +
-                "on Melt3D's servers. Call slice_model with the STL's path; the G-code is written beside it. " +
-                'Call slicer_settings to learn the settings, limits and pricing.',
+                'The most advanced nonplanar slicing: slices 3D models (STL files on this computer) into G-code ' +
+                "for FDM 3D printers on Melt3D's servers, in flat layers or in nonplanar conical layers that print " +
+                "overhangs without support. Call slice_model with the STL's path; the G-code is written beside it. " +
+                'For an overhang that would need support, try layers: "conical" (a positive cone_angle for one that ' +
+                'widens upwards). Call slicer_settings to learn the settings, limits and pricing.',
         },
     );
 
@@ -55,7 +69,9 @@ export function createServer(config: Config): McpServer {
         {
             title: 'Slice a 3D model into G-code',
             description:
-                "Slices an STL file on this computer into G-code on Melt3D's servers and writes the G-code to a file. " +
+                "Slices an STL file on this computer into G-code on Melt3D's servers and writes the G-code to a file, " +
+                'in flat layers or in nonplanar conical layers (layers: "conical"), which print overhangs without ' +
+                'support. ' +
                 'Returns where it was written, whether it is printable, the layer count, and the estimated print time ' +
                 'and filament. A live API key is billed once per successful slice; failed slices are free.',
             inputSchema: {
@@ -75,6 +91,19 @@ export function createServer(config: Config): McpServer {
                 bed_temp: z.number().min(0).max(200).optional().describe('°C'),
                 brim_width: z.number().min(0).max(50).optional().describe('mm'),
                 supports: z.enum(['none', 'bed']).optional(),
+                layers: z
+                    .enum(['planar', 'conical'])
+                    .optional()
+                    .describe('planar (default), or conical: nonplanar layers that print overhangs without support'),
+                cone_angle: z
+                    .number()
+                    .min(-85)
+                    .max(85)
+                    .optional()
+                    .describe(
+                        'With layers "conical": degrees from horizontal, at least 5 either way (default 15). ' +
+                            'Positive leans the layers outwards, negative inwards.',
+                    ),
             },
             outputSchema: {
                 output_path: z.string(),
@@ -131,8 +160,13 @@ export function createServer(config: Config): McpServer {
 
             const summary = summarize(sliced.gcode);
             const printable = sliced.kind !== 'preview';
+            const what = printable
+                ? sliced.kind === 'mapped'
+                    ? 'printable nonplanar (conical) G-code'
+                    : 'printable G-code'
+                : 'a G-code PREVIEW (test key: toolpath only, not printable)';
             const lines = [
-                `Wrote ${printable ? 'printable G-code' : 'a G-code PREVIEW (test key: toolpath only, not printable)'} to ${output}.`,
+                `Wrote ${what} to ${output}.`,
                 `${summary.layers} layers, ${(sliced.gcode.length / 1024).toFixed(0)} KiB.`,
             ];
             if (summary.printSeconds !== undefined) lines.push(`Estimated print time: ${formatDuration(summary.printSeconds)}.`);

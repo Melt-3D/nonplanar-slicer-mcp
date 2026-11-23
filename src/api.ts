@@ -20,6 +20,10 @@ export interface SliceSettings {
     bed_temp?: number;
     brim_width?: number;
     supports?: 'none' | 'bed';
+    /** `conical`: nonplanar conical layers, bent and mapped back on the server. */
+    layers?: 'planar' | 'conical';
+    /** With `layers: 'conical'`: the layers' lean from horizontal, degrees, 5 to 85 either way. */
+    cone_angle?: number;
 }
 
 export interface SliceRequest {
@@ -32,7 +36,7 @@ export interface SliceRequest {
 
 export interface Sliced {
     gcode: string;
-    /** `full`: printable (live keys). `preview`: the toolpath only (test keys). */
+    /** `full`, or `mapped` for conical layers: printable (live keys). `preview`: the toolpath only (test keys). */
     kind: string;
     /** Requests the key may still make this minute, if the server said. */
     rateLimitRemaining?: number;

@@ -3,7 +3,10 @@
 An [MCP](https://modelcontextprotocol.io) server that lets AI agents (Claude,
 Cursor, VS Code and other MCP clients) slice 3D models into G-code for FDM 3D
 printers, on Melt3D's servers, through the
-[Melt3D Slicer API](https://melt3d.eu/api).
+[Melt3D Slicer API](https://melt3d.eu/api): the most advanced nonplanar
+slicing. Besides flat layers, it slices **conical layers**, which print
+overhangs leaning outwards (or inwards) without support: the server bends the
+part, slices it and maps the G-code back onto the bed itself.
 
 The agent names an STL file on your computer; the server sends it to the API
 and writes the G-code beside it, then tells the agent the layer count and the
@@ -14,7 +17,7 @@ conversation.
 
 | Tool | What it does |
 |---|---|
-| `slice_model` | Slices an STL file into a G-code file. Settings: `engine` (PrusaSlicer, CuraEngine, OrcaSlicer), `layer_height`, `first_layer_height`, `perimeters`, `infill_density`, `infill_pattern`, `nozzle_temp`, `bed_temp`, `brim_width`, `supports` |
+| `slice_model` | Slices an STL file into a G-code file. Layers: `layers` (`planar` or `conical`) and `cone_angle` (degrees, 5 to 85 either way). Settings: `engine` (PrusaSlicer, CuraEngine, OrcaSlicer), `layer_height`, `first_layer_height`, `perimeters`, `infill_density`, `infill_pattern`, `nozzle_temp`, `bed_temp`, `brim_width`, `supports` |
 | `slicer_settings` | Describes the settings, the key kinds, the limits and where pricing is |
 
 ## Getting a key
@@ -47,11 +50,13 @@ Claude Desktop, Cursor and other clients that read an `mcpServers` config:
 ```
 
 Then ask, for example: "Slice ~/models/bracket.stl at 0.2 mm layers with 20%
-gyroid infill."
+gyroid infill", or "Slice ~/models/vase.stl in conical layers at 30 degrees so
+its overhang prints without support."
 
 ## Behaviour
 
-- Only STL files, up to 100 MiB. Export other formats as STL first.
+- Only STL files, up to 100 MiB. Export other formats as STL first. Conical
+  layers need a binary STL, and take no supports.
 - The G-code goes beside the model (`bracket.stl` to `bracket.gcode`) unless
   `output_path` says otherwise, and an existing file is replaced only with
   `overwrite: true`.

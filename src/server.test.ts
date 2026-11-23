@@ -132,6 +132,25 @@ test('a test key is told its G-code is a preview', async () => {
     }
 });
 
+test('conical layers are asked for, and their G-code is called nonplanar', async () => {
+    const api = await fakeApi([gcode('mapped')]);
+    try {
+        const client = await connect(api.url);
+        const result = await client.callTool({
+            name: 'slice_model',
+            arguments: { model_path: await model(), layers: 'conical', cone_angle: -30 },
+        });
+        assert.equal(result.isError, undefined, text(result));
+        assert.match(text(result), /printable nonplanar \(conical\) G-code/);
+        assert.equal((result.structuredContent as { printable: boolean }).printable, true);
+        const url = new URL(api.seen[0].url, api.url);
+        assert.equal(url.searchParams.get('layers'), 'conical');
+        assert.equal(url.searchParams.get('cone_angle'), '-30');
+    } finally {
+        api.close();
+    }
+});
+
 test('the API says why it refused, and the agent hears it', async () => {
     const api = await fakeApi([problem(402, 'payment-required', 'This API key\'s account reached its monthly spending cap.')]);
     try {

@@ -1,7 +1,7 @@
 {
   "name": "@melt3d/slicer-mcp",
   "version": "0.1.0",
-  "description": "MCP server for the Melt3D Slicer API: lets AI agents slice STL models into G-code on Melt3D's servers.",
+  "description": "MCP server for the Melt3D Slicer API, the most advanced nonplanar slicing: lets AI agents slice STL models into G-code in conical (nonplanar) or flat layers on Melt3D's servers.",
   "license": "MIT",
   "type": "module",
   "bin": {
@@ -20,6 +20,9 @@
     "model-context-protocol",
     "3d-printing",
     "slicer",
+    "nonplanar",
+    "non-planar",
+    "conical-slicing",
     "gcode",
     "stl",
     "melt3d"
