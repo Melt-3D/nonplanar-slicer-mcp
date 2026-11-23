@@ -1,0 +1,47 @@
+{
+  "name": "@melt3d/slicer-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for the Melt3D Slicer API: lets AI agents slice STL models into G-code on Melt3D's servers.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "melt3d-slicer-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "mcpName": "io.github.Melt-3D/slicer",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "3d-printing",
+    "slicer",
+    "gcode",
+    "stl",
+    "melt3d"
+  ],
+  "homepage": "https://melt3d.eu/api",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Melt-3D/Slicer.git",
+    "directory": "mcp"
+  },
+  "scripts": {
+    "build": "tsc",
+    "check": "tsc --noEmit",
+    "test": "tsc && node --test dist/*.test.js",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "typescript": "^5.9.3"
+  }
+}

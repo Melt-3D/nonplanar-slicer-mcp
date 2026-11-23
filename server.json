@@ -1,0 +1,30 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.Melt-3D/slicer",
+  "title": "Melt3D Slicer",
+  "description": "Slice STL models into G-code for FDM 3D printers with PrusaSlicer, CuraEngine or OrcaSlicer.",
+  "websiteUrl": "https://melt3d.eu/api",
+  "repository": {
+    "url": "https://github.com/Melt-3D/Slicer",
+    "source": "github",
+    "subfolder": "mcp"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@melt3d/slicer-mcp",
+      "version": "0.1.0",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "MELT3D_API_KEY",
+          "description": "A Melt3D Slicer API key (m3d_test_ free preview, m3d_live_ billed). Create one at https://auth.melt3d.eu/developers.",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}
