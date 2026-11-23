@@ -12,7 +12,7 @@ import { z } from 'zod';
 import { ApiError, slice } from './api.js';
 import { formatDuration, summarize } from './gcode.js';
 
-export const VERSION = '0.1.0';
+export const VERSION = '0.1.1';
 
 /** The largest model the API takes, once inflated. */
 const MAX_MODEL_BYTES = 100 * 1024 * 1024;
