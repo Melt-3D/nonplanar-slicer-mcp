@@ -74,6 +74,7 @@ API (`src/server.test.ts`). It wraps `POST /v1/slices`
 (`crates/meltslicer-server/API.md`), so a change to that route's contract
 comes here in the same PR.
 
-Releasing: bump `version` in `package.json`, `src/server.ts` and
-`server.json`, then `npm publish --access public` and publish `server.json`
-to the MCP Registry with `mcp-publisher publish`.
+Releasing: bump the version in `package.json`, `src/server.ts` (`VERSION`)
+and `server.json` (both places), merge, then tag main with `mcp-v<version>`
+and push the tag. `.github/workflows/mcp-publish.yml` publishes to npm and
+the MCP Registry; its header says how the first release differs.
