@@ -5,9 +5,8 @@
   "description": "The most advanced nonplanar slicing: STL to G-code in conical or flat layers, for FDM 3D printers.",
   "websiteUrl": "https://melt3d.eu/api",
   "repository": {
-    "url": "https://github.com/Melt-3D/Slicer",
-    "source": "github",
-    "subfolder": "mcp"
+    "url": "https://github.com/Melt-3D/nonplanar-slicer-mcp",
+    "source": "github"
   },
   "version": "0.1.0",
   "packages": [

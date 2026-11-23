@@ -10,7 +10,8 @@
   "files": [
     "dist",
     "!dist/*.test.js",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "engines": {
     "node": ">=20"
@@ -31,9 +32,9 @@
   "homepage": "https://melt3d.eu/api",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Melt-3D/Slicer.git",
-    "directory": "mcp"
+    "url": "git+https://github.com/Melt-3D/nonplanar-slicer-mcp.git"
   },
+  "bugs": "https://github.com/Melt-3D/nonplanar-slicer-mcp/issues",
   "scripts": {
     "build": "tsc",
     "check": "tsc --noEmit",

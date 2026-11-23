@@ -1,6 +1,6 @@
 // The Melt3D Slicer API, as far as this server calls it: POST /v1/slices
-// (crates/meltslicer-server/API.md, and the OpenAPI description
-// crates/meltslicer-server/src/v1/openapi.rs derives, in this repository).
+// (the guide at https://api.melt3d.eu/llms.txt, the OpenAPI description at
+// https://api.melt3d.eu/v1/openapi.json).
 
 import { randomUUID } from 'node:crypto';
 import { promisify } from 'node:util';
