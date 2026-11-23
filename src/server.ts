@@ -53,7 +53,7 @@ Keys and pricing: https://melt3d.eu/api`;
 
 export function createServer(config: Config): McpServer {
     const server = new McpServer(
-        { name: 'melt3d-slicer', title: 'Melt3D Slicer', version: VERSION },
+        { name: 'meltslicer', title: 'MeltSlicer', version: VERSION },
         {
             instructions:
                 'The most advanced nonplanar slicing: slices 3D models (STL files on this computer) into G-code ' +

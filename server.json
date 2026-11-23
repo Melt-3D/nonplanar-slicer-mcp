@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.Melt-3D/slicer",
-  "title": "Melt3D Slicer",
+  "name": "io.github.Melt-3D/meltslicer-mcp",
+  "title": "MeltSlicer",
   "description": "The most advanced nonplanar slicing: STL to G-code in conical or flat layers, for FDM 3D printers.",
   "websiteUrl": "https://melt3d.eu/api",
   "repository": {
@@ -13,7 +13,7 @@
   "packages": [
     {
       "registryType": "npm",
-      "identifier": "@melt3d/slicer-mcp",
+      "identifier": "meltslicer-mcp",
       "version": "0.1.0",
       "transport": { "type": "stdio" },
       "environmentVariables": [

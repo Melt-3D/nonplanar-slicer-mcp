@@ -1,4 +1,4 @@
-# Melt3D Slicer MCP server
+# meltslicer-mcp
 
 An [MCP](https://modelcontextprotocol.io) server that lets AI agents (Claude,
 Cursor, VS Code and other MCP clients) slice 3D models into G-code for FDM 3D
@@ -31,7 +31,7 @@ start with 1 EUR of free credit. See the [API terms](https://melt3d.eu/api/terms
 Claude Code:
 
 ```sh
-claude mcp add melt3d-slicer --env MELT3D_API_KEY=m3d_live_… -- npx -y @melt3d/slicer-mcp
+claude mcp add meltslicer --env MELT3D_API_KEY=m3d_live_… -- npx -y meltslicer-mcp
 ```
 
 Claude Desktop, Cursor and other clients that read an `mcpServers` config:
@@ -39,9 +39,9 @@ Claude Desktop, Cursor and other clients that read an `mcpServers` config:
 ```json
 {
   "mcpServers": {
-    "melt3d-slicer": {
+    "meltslicer": {
       "command": "npx",
-      "args": ["-y", "@melt3d/slicer-mcp"],
+      "args": ["-y", "meltslicer-mcp"],
       "env": { "MELT3D_API_KEY": "m3d_live_…" }
     }
   }
