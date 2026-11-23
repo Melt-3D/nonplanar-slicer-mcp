@@ -7,6 +7,11 @@ name: Publish
 #
 #   git tag v0.2.0 && git push origin v0.2.0
 #
+# It can also be run by hand (Actions, Publish, Run workflow) on main, for
+# the version package.json names. A version already on npm is not published
+# again, so a run that failed after npm, or a version published by hand,
+# still gets its MCP Registry listing.
+#
 # npm: trusted publishing (OIDC), so no npm token is stored. The package's
 # settings on npmjs.com name this workflow as its trusted publisher (GitHub
 # Actions, Melt-3D/nonplanar-slicer-mcp, publish.yml). npm allows it only on
@@ -17,6 +22,7 @@ name: Publish
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -41,10 +47,10 @@ jobs:
       # Trusted publishing needs npm 11.5.1 or later; Node 22 ships 10.
       - run: npm install -g npm@11.6.2
 
-      - name: The tag names the version every file says
+      - name: Every file names the same version, and the tag names it too
         run: |
-          tag="${GITHUB_REF_NAME#v}"
           package="$(node -p "require('./package.json').version")"
+          if [ "$GITHUB_REF_TYPE" = tag ]; then tag="${GITHUB_REF_NAME#v}"; else tag="$package"; fi
           server_json="$(node -p "const s = require('./server.json'); [s.version, ...s.packages.map((p) => p.version)].join(' ')")"
           code="$(sed -n "s/^export const VERSION = '\(.*\)';$/\1/p" src/server.ts)"
           for v in $package $server_json $code; do
@@ -56,7 +62,14 @@ jobs:
 
       - run: npm ci
       - run: npm test
-      - run: npm publish --access public
+      - name: Publish to npm, unless this version is there already
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if npm view "@melt3d/nonplanar-slicer-mcp@$version" version >/dev/null 2>&1; then
+            echo "$version is on npm already: not published again"
+          else
+            npm publish --access public
+          fi
 
       - name: List it on the MCP Registry
         run: |
