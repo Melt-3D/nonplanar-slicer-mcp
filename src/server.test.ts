@@ -120,18 +120,6 @@ test('slice_model writes the G-code beside the model and says what it is', async
     }
 });
 
-test('a test key gets printable G-code too', async () => {
-    const api = await fakeApi([gcode('full')]);
-    try {
-        const client = await connect(api.url, 'm3d_test_x');
-        const result = await client.callTool({ name: 'slice_model', arguments: { model_path: await model() } });
-        assert.match(text(result), /Wrote printable G-code/);
-        assert.doesNotMatch(text(result), /PREVIEW/);
-    } finally {
-        api.close();
-    }
-});
-
 test('conical layers are asked for, and their G-code is called nonplanar', async () => {
     const api = await fakeApi([gcode('mapped')]);
     try {
@@ -152,12 +140,14 @@ test('conical layers are asked for, and their G-code is called nonplanar', async
 });
 
 test('the API says why it refused, and the agent hears it', async () => {
-    const api = await fakeApi([problem(402, 'payment-required', 'This API key\'s account reached its monthly spending cap.')]);
+    const api = await fakeApi([
+        problem(402, 'payment-required', "This API key's account used its free credit. Add a payment method."),
+    ]);
     try {
         const client = await connect(api.url);
         const result = await client.callTool({ name: 'slice_model', arguments: { model_path: await model() } });
         assert.equal(result.isError, true);
-        assert.match(text(result), /spending cap/);
+        assert.match(text(result), /free credit/);
     } finally {
         api.close();
     }

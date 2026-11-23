@@ -23,15 +23,15 @@ conversation.
 ## Getting a key
 
 Create one at [auth.melt3d.eu/developers](https://auth.melt3d.eu/developers).
-Every slice returns printable G-code. A live key (`m3d_live_…`) is billed per
-slice; a test key (`m3d_test_…`) is free, with tighter limits. See the [API terms](https://melt3d.eu/api/terms).
+Every slice returns printable G-code and is billed per slice. New accounts
+start with 1 EUR of free credit. See the [API terms](https://melt3d.eu/api/terms).
 
 ## Setup
 
 Claude Code:
 
 ```sh
-claude mcp add melt3d-slicer --env MELT3D_API_KEY=m3d_test_… -- npx -y @melt3d/slicer-mcp
+claude mcp add melt3d-slicer --env MELT3D_API_KEY=m3d_live_… -- npx -y @melt3d/slicer-mcp
 ```
 
 Claude Desktop, Cursor and other clients that read an `mcpServers` config:
@@ -42,7 +42,7 @@ Claude Desktop, Cursor and other clients that read an `mcpServers` config:
     "melt3d-slicer": {
       "command": "npx",
       "args": ["-y", "@melt3d/slicer-mcp"],
-      "env": { "MELT3D_API_KEY": "m3d_test_…" }
+      "env": { "MELT3D_API_KEY": "m3d_live_…" }
     }
   }
 }

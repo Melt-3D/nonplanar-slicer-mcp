@@ -45,10 +45,10 @@ Print settings (all optional; left out, the engine's default):
 - brim_width: mm, 0 to 50
 - supports: none or bed (supports from the bed only)
 
-Keys: every slice returns printable G-code. A live key (m3d_live_...) is
-billed per slice; a test key (m3d_test_...) is free, with tighter limits.
-Limits per key: live 4 slices at once and 120 a minute, test 1 and 10. A
-slice that cannot answer within 95 seconds is stopped and not billed.
+Billing: every slice returns printable G-code and is billed per slice. New
+accounts start with 1 EUR of free credit; after that a payment method is
+needed. Limits per key: 4 slices at once, 120 a minute. A slice that cannot
+answer within 95 seconds is stopped and not billed.
 Keys and pricing: https://melt3d.eu/api`;
 
 export function createServer(config: Config): McpServer {
@@ -120,8 +120,8 @@ export function createServer(config: Config): McpServer {
         async ({ model_path, output_path, overwrite, ...settings }): Promise<CallToolResult> => {
             if (!config.apiKey) {
                 return failure(
-                    'MELT3D_API_KEY is not set. Create a key at https://auth.melt3d.eu/developers (a free test key ' +
-                        'works for trying it out) and set MELT3D_API_KEY in this MCP server\'s environment.',
+                    'MELT3D_API_KEY is not set. Create a key at https://auth.melt3d.eu/developers (new accounts ' +
+                        'start with free credit) and set MELT3D_API_KEY in this MCP server\'s environment.',
                 );
             }
             const model = resolve(model_path);
